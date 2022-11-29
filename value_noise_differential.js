@@ -64,3 +64,32 @@ function value_plus_slope_xy( x, y, xsize = 256, ysize = 256,
     output.sx = slope_x_sum; output.sy = slope_y_sum
     return output
 }
+
+
+////////////////////////////////////////////////////////////////
+// socket in whatever deterministic noise you want here
+
+// this is some garbage i made up
+var seed = 88883
+var noise_table = []
+var ns = 256
+var nt_size = ns * ns
+function init_random_table() {
+    let list = []
+    for (let a = 0; a < nt_size; a ++) {
+        list.push(a)
+    }
+    for (let a = 0; a < nt_size; a ++) {
+        noise_table[a] = draw_card(list)
+    }
+}
+// call init_random_table() once at the top
+
+
+// random number generator. it takes three inputs (in the noise above, these are x position, y position, and our seed) and returns a value from the table 
+// divides by random number range to yield 0-1
+function pos3(x, y, seed) {
+    let linear = (x % ns) + (y % ns) * ns + seed
+    linear %= noise_table.length
+    return noise_table[linear] / nt_size
+}
